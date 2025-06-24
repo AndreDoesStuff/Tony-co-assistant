@@ -14,11 +14,14 @@ import {
   SelectTabEvent,
   SelectTabData,
   TabValue,
+  Spinner,
 } from '@fluentui/react-components';
 import { SendRegular, AddRegular, ImageRegular, CopyRegular, EditRegular, CheckmarkRegular, DismissRegular, ArrowLeftRegular, PanelRightRegular } from '@fluentui/react-icons';
 import styled from 'styled-components';
 import UXRepository from './UXRepository';
 import SchoolBench from './SchoolBench';
+import { mockResponses } from '../data/mockResponses';
+import TonyTypingIndicator from './TonyTypingIndicator';
 
 const useStyles = makeStyles({
   root: {
@@ -35,7 +38,7 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     flex: 1,
     padding: '20px',
-    maxWidth: '800px',
+    maxWidth: '1200px',
     margin: '0 auto',
     width: '100%',
     transition: 'width 0.3s',
@@ -51,14 +54,27 @@ const useStyles = makeStyles({
     overflowY: 'auto',
     flex: 1,
     padding: '20px 0',
+    '&::-webkit-scrollbar': {
+      width: '8px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'transparent',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: tokens.colorNeutralStroke1,
+      borderRadius: '4px',
+    },
   },
   message: {
     padding: '12px 16px',
     borderRadius: '8px',
     maxWidth: '80%',
+    border: `1px solid ${tokens.colorNeutralStroke1}`,
+    backgroundColor: tokens.colorNeutralBackground1,
+    margin: '0 24px',
   },
   userMessage: {
-    backgroundColor: tokens.colorNeutralBackground2,
+    backgroundColor: tokens.colorNeutralBackground1,
     color: '#fff',
     alignSelf: 'flex-end',
     borderRadius: '12px',
@@ -66,12 +82,13 @@ const useStyles = makeStyles({
     margin: '8px 0',
     position: 'relative',
     minWidth: '120px',
-    border: 'none',
+    border: `1px solid ${tokens.colorNeutralStroke1}`,
     boxShadow: 'none',
   },
   aiMessage: {
     backgroundColor: tokens.colorNeutralBackground1,
     alignSelf: 'flex-start',
+    border: 'none'
   },
   inputContainer: {
     display: 'flex',
@@ -93,7 +110,7 @@ const useStyles = makeStyles({
   textarea: {
     flex: 1,
     resize: 'none',
-    minHeight: '150px',
+    minHeight: '135px',
     maxHeight: '500px',
     width: '100%',
     padding: '12px 56px 12px 12px',
@@ -207,10 +224,6 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     gap: '8px',
-    '& > div': {
-      borderRadius: '12px',
-      overflow: 'hidden',
-    },
   },
   preMessage: {
     whiteSpace: 'pre-wrap',
@@ -220,18 +233,18 @@ const useStyles = makeStyles({
   },
   userBubbleActions: {
     position: 'absolute',
-    top: '8px',
-    right: '8px',
+    bottom: '-32px',
+    right: '0',
     display: 'flex',
     gap: '4px',
     zIndex: 2,
   },
   bubbleIconButton: {
-    background: 'none',
+    background: tokens.colorNeutralBackground1,
     border: 'none',
-    padding: '2px',
+    padding: '4px',
     cursor: 'pointer',
-    color: '#fff',
+    color: tokens.colorNeutralForeground1,
     borderRadius: '4px',
     transition: 'background 0.2s',
     width: '24px',
@@ -243,6 +256,20 @@ const useStyles = makeStyles({
       background: tokens.colorNeutralBackground2,
     },
   },
+  editIndicator: {
+    position: 'absolute',
+    top: '-32px',
+    left: '0',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    color: tokens.colorNeutralForeground1,
+    fontSize: '14px',
+    padding: '4px 8px',
+    background: tokens.colorNeutralBackground1,
+    border: `1px solid ${tokens.colorNeutralStroke1}`,
+    borderRadius: '4px',
+  },
   editTextarea: {
     width: '100%',
     minHeight: '60px',
@@ -251,11 +278,82 @@ const useStyles = makeStyles({
     borderRadius: '8px',
     border: 'none',
     padding: '8px',
-    background: tokens.colorNeutralBackground2,
+    background: tokens.colorNeutralBackground1,
     color: '#fff',
-    resize: 'vertical',
+    resize: 'both',
     marginBottom: '8px',
     boxSizing: 'border-box',
+    overflow: 'hidden',
+    transition: 'all 0.2s ease',
+    transform: 'scaleX(-1)',
+    '&::-webkit-resizer': {
+      transform: 'scaleX(-1)',
+    },
+    '&:focus': {
+      outline: 'none',
+      boxShadow: `0 0 0 2px ${tokens.colorBrandStroke1}`,
+    },
+  },
+  loadingMessage: {
+    backgroundColor: tokens.colorNeutralBackground1,
+    alignSelf: 'flex-start',
+    padding: '12px 16px',
+    borderRadius: '8px',
+    maxWidth: '80%',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  },
+  loadingText: {
+    color: tokens.colorNeutralForeground2,
+  },
+  ellipsis: {
+    display: 'inline-block',
+    position: 'relative',
+    width: '16px',
+    height: '8px',
+    verticalAlign: 'bottom',
+    marginLeft: '2px',
+    '& span': {
+      position: 'absolute',
+      width: '3px',
+      height: '3px',
+      borderRadius: '50%',
+      background: tokens.colorNeutralForeground2,
+      bottom: '0',
+      '&:nth-child(1)': {
+        left: '0px',
+        animation: 'ellipsis1 1.2s infinite',
+      },
+      '&:nth-child(2)': {
+        left: '6px',
+        animation: 'ellipsis2 1.2s infinite',
+      },
+      '&:nth-child(3)': {
+        left: '12px',
+        animation: 'ellipsis3 1.2s infinite',
+      },
+    },
+    '@keyframes ellipsis1': {
+      '0%': { opacity: '0.2' },
+      '20%': { opacity: '1' },
+      '40%': { opacity: '0.2' },
+      '100%': { opacity: '0.2' }
+    },
+    '@keyframes ellipsis2': {
+      '0%': { opacity: '0.2' },
+      '20%': { opacity: '0.2' },
+      '40%': { opacity: '1' },
+      '60%': { opacity: '0.2' },
+      '100%': { opacity: '0.2' }
+    },
+    '@keyframes ellipsis3': {
+      '0%': { opacity: '0.2' },
+      '40%': { opacity: '0.2' },
+      '60%': { opacity: '1' },
+      '80%': { opacity: '0.2' },
+      '100%': { opacity: '0.2' }
+    }
   },
 });
 
@@ -266,6 +364,17 @@ interface Message {
   timestamp: Date;
 }
 
+const AnimatedEllipsis: React.FC = () => {
+  const styles = useStyles();
+  return (
+    <div className={styles.ellipsis}>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  );
+};
+
 const ChatInterface: React.FC = () => {
   const styles = useStyles();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -274,10 +383,10 @@ const ChatInterface: React.FC = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
-  const [editValue, setEditValue] = useState('');
-  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -286,15 +395,46 @@ const ChatInterface: React.FC = () => {
     }
   }, [inputValue]);
 
+  useEffect(() => {
+    endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isLoading]);
+
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      content: inputValue,
-      sender: 'user',
-      timestamp: new Date(),
-    };
-    setMessages([...messages, newMessage]);
+    
+    if (editingMessageId) {
+      // Update existing message
+      const newMessages = messages.map(msg => 
+        msg.id === editingMessageId 
+          ? { ...msg, content: inputValue }
+          : msg
+      );
+      setMessages(newMessages);
+      setEditingMessageId(null);
+    } else {
+      // Add new message
+      const newMessage: Message = {
+        id: Date.now().toString(),
+        content: inputValue,
+        sender: 'user',
+        timestamp: new Date(),
+      };
+      setMessages([...messages, newMessage]);
+      setIsLoading(true);
+
+      // Add mock AI response after a short delay
+      setTimeout(() => {
+        const randomResponse = mockResponses[Math.floor(Math.random() * mockResponses.length)];
+        const aiMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          content: randomResponse,
+          sender: 'ai',
+          timestamp: new Date(),
+        };
+        setMessages(prevMessages => [...prevMessages, aiMessage]);
+        setIsLoading(false);
+      }, 3000);
+    }
     setInputValue('');
   };
 
@@ -331,6 +471,17 @@ const ChatInterface: React.FC = () => {
     }
   };
 
+  const handleEditClick = (message: Message) => {
+    setEditingMessageId(message.id);
+    setInputValue(message.content);
+    textareaRef.current?.focus();
+  };
+
+  const handleCancelEdit = () => {
+    setEditingMessageId(null);
+    setInputValue('');
+  };
+
   return (
     <div className={styles.root}>
       <div className={styles.chatContainer} style={{ width: sidebarOpen ? undefined : '100%' }}>
@@ -340,81 +491,36 @@ const ChatInterface: React.FC = () => {
           </button>
         )}
         <div className={styles.messageList}>
-          {messages.map((message, idx) => {
+          {messages.map((message) => {
             const isUser = message.sender === 'user';
-            const isEditing = editingMessageId === message.id;
-            const isCopied = copiedMessageId === message.id;
             if (isUser) {
               return (
                 <div
                   key={message.id}
                   className={`${styles.message} ${styles.userMessage}`}
                 >
+                  <pre className={styles.preMessage}>{message.content}</pre>
                   <div className={styles.userBubbleActions}>
                     <button
                       className={styles.bubbleIconButton}
-                      title={isCopied ? 'Copied!' : 'Copy'}
+                      title="Copy"
                       onClick={() => {
                         navigator.clipboard.writeText(message.content);
-                        setCopiedMessageId(message.id);
-                        setTimeout(() => setCopiedMessageId(null), 1200);
                       }}
                     >
                       <CopyRegular />
                     </button>
-                    {isEditing ? (
-                      <>
-                        <button
-                          className={styles.bubbleIconButton}
-                          title="Save"
-                          onClick={() => {
-                            setEditingMessageId(null);
-                            // Save edit
-                            const newMessages = [...messages];
-                            newMessages[idx] = { ...message, content: editValue };
-                            setMessages(newMessages);
-                          }}
-                        >
-                          <CheckmarkRegular />
-                        </button>
-                        <button
-                          className={styles.bubbleIconButton}
-                          title="Cancel"
-                          onClick={() => {
-                            setEditingMessageId(null);
-                            setEditValue(message.content);
-                          }}
-                        >
-                          <DismissRegular />
-                        </button>
-                      </>
-                    ) : (
-                      <button
-                        className={styles.bubbleIconButton}
-                        title="Edit"
-                        onClick={() => {
-                          setEditingMessageId(message.id);
-                          setEditValue(message.content);
-                        }}
-                      >
-                        <EditRegular />
-                      </button>
-                    )}
+                    <button
+                      className={styles.bubbleIconButton}
+                      title="Edit"
+                      onClick={() => handleEditClick(message)}
+                    >
+                      <EditRegular />
+                    </button>
                   </div>
-                  {isEditing ? (
-                    <textarea
-                      className={styles.editTextarea}
-                      value={editValue}
-                      onChange={e => setEditValue(e.target.value)}
-                      autoFocus
-                    />
-                  ) : (
-                    <pre className={styles.preMessage}>{message.content}</pre>
-                  )}
                 </div>
               );
             }
-            // AI message
             return (
               <div
                 key={message.id}
@@ -424,58 +530,84 @@ const ChatInterface: React.FC = () => {
               </div>
             );
           })}
+          {isLoading && <TonyTypingIndicator />}
+          <div ref={endOfMessagesRef} />
         </div>
         <div className={styles.inputContainer}>
+          {editingMessageId && (
+            <div className={styles.editIndicator}>
+              <EditRegular />
+              <span>Editing message</span>
+              <button
+                onClick={handleCancelEdit}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: '4px',
+                  cursor: 'pointer',
+                  color: tokens.colorNeutralForeground1,
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <DismissRegular />
+              </button>
+            </div>
+          )}
           <div className={styles.inputFieldWrapper}>
             <textarea
               ref={textareaRef}
               className={styles.textarea}
               value={inputValue}
               onChange={e => setInputValue(e.target.value)}
-              placeholder="Type your message..."
+              placeholder={editingMessageId ? "Edit your message..." : "Type your message..."}
               onKeyPress={handleKeyPress}
               rows={1}
               maxLength={5000}
             />
             <div className={styles.buttonStack}>
-              <button
-                type="button"
-                className={styles.iconButton}
-                onClick={handleFileButtonClick}
-                aria-label="Add file"
-              >
-                <AddRegular />
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                className={styles.hiddenInput}
-                accept=".txt,.md,.json,.csv,.docx,.pdf,.yaml,.pptx,.xml"
-                multiple
-                onChange={handleFileChange}
-              />
-              <button
-                type="button"
-                className={styles.iconButton}
-                onClick={handleImageButtonClick}
-                aria-label="Add image"
-              >
-                <ImageRegular />
-              </button>
-              <input
-                ref={imageInputRef}
-                type="file"
-                className={styles.hiddenInput}
-                accept=".png,.jpg,.jpeg,.webp,.svg"
-                multiple
-                onChange={handleImageChange}
-              />
+              {!editingMessageId && (
+                <>
+                  <button
+                    type="button"
+                    className={styles.iconButton}
+                    onClick={handleFileButtonClick}
+                    aria-label="Add file"
+                  >
+                    <AddRegular />
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    className={styles.hiddenInput}
+                    accept=".txt,.md,.json,.csv,.docx,.pdf,.yaml,.pptx,.xml"
+                    multiple
+                    onChange={handleFileChange}
+                  />
+                  <button
+                    type="button"
+                    className={styles.iconButton}
+                    onClick={handleImageButtonClick}
+                    aria-label="Add image"
+                  >
+                    <ImageRegular />
+                  </button>
+                  <input
+                    ref={imageInputRef}
+                    type="file"
+                    className={styles.hiddenInput}
+                    accept=".png,.jpg,.jpeg,.webp,.svg"
+                    multiple
+                    onChange={handleImageChange}
+                  />
+                </>
+              )}
               <Button
                 className={styles.iconButton}
                 appearance="primary"
                 icon={<SendRegular />}
                 onClick={handleSendMessage}
-                aria-label="Send message"
+                aria-label={editingMessageId ? "Save changes" : "Send message"}
               />
             </div>
           </div>

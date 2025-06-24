@@ -24,7 +24,7 @@ const useStyles = makeStyles({
 export interface CustomAccordionItem {
   id: string;
   renderHeader: (isExpanded: boolean) => React.ReactNode;
-  renderContent: () => React.ReactNode;
+  renderContent: (isExpanded: boolean) => React.ReactNode;
 }
 
 interface CustomAccordionProps {
@@ -59,7 +59,7 @@ const CustomAccordion: React.FC<CustomAccordionProps> = ({ items }) => {
               {item.renderHeader(isExpanded)}
             </AccordionHeader>
             <AccordionPanel className={styles.accordionPanel}>
-              {item.renderContent()}
+              {item.renderContent(isExpanded)}
             </AccordionPanel>
           </AccordionItem>
         );
