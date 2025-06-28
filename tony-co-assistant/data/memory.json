@@ -1,0 +1,573 @@
+{
+  "nodes": [
+    [
+      "memory_1751105181765_tnz4b7ia7",
+      {
+        "id": "memory_1751105181765_tnz4b7ia7",
+        "type": "interaction",
+        "data": {
+          "text": "Test interaction"
+        },
+        "connections": [
+          "memory_1751105181766_pvbh2i9vk"
+        ],
+        "metadata": {
+          "source": "user_input",
+          "confidence": 0.82,
+          "lastUpdated": 1751105181765,
+          "tags": [
+            "test"
+          ],
+          "importance": 0.7,
+          "accessCount": 0
+        },
+        "createdAt": 1751105181765,
+        "lastUpdated": 1751105181765
+      }
+    ],
+    [
+      "memory_1751105181766_pvbh2i9vk",
+      {
+        "id": "memory_1751105181766_pvbh2i9vk",
+        "type": "pattern",
+        "data": {
+          "description": "Test pattern"
+        },
+        "connections": [
+          "memory_1751105181765_tnz4b7ia7"
+        ],
+        "metadata": {
+          "source": "system_generated",
+          "confidence": 0.74,
+          "lastUpdated": 1751105181766,
+          "tags": [
+            "test",
+            "pattern"
+          ],
+          "importance": 0.8,
+          "accessCount": 0
+        },
+        "createdAt": 1751105181766,
+        "lastUpdated": 1751105181766
+      }
+    ],
+    [
+      "memory_1751105239470_1m0ycd5aq",
+      {
+        "id": "memory_1751105239470_1m0ycd5aq",
+        "type": "interaction",
+        "data": {
+          "text": "Test interaction"
+        },
+        "connections": [
+          "memory_1751105239470_xjxamg6gl"
+        ],
+        "metadata": {
+          "source": "user_input",
+          "confidence": 0.82,
+          "lastUpdated": 1751105239470,
+          "tags": [
+            "test"
+          ],
+          "importance": 0.7,
+          "accessCount": 0
+        },
+        "createdAt": 1751105239470,
+        "lastUpdated": 1751105239470
+      }
+    ],
+    [
+      "memory_1751105239470_xjxamg6gl",
+      {
+        "id": "memory_1751105239470_xjxamg6gl",
+        "type": "pattern",
+        "data": {
+          "description": "Test pattern"
+        },
+        "connections": [
+          "memory_1751105239470_1m0ycd5aq"
+        ],
+        "metadata": {
+          "source": "system_generated",
+          "confidence": 0.74,
+          "lastUpdated": 1751105239470,
+          "tags": [
+            "test",
+            "pattern"
+          ],
+          "importance": 0.8,
+          "accessCount": 0
+        },
+        "createdAt": 1751105239470,
+        "lastUpdated": 1751105239470
+      }
+    ],
+    [
+      "memory_1751105274905_s6e2wfjww",
+      {
+        "id": "memory_1751105274905_s6e2wfjww",
+        "type": "interaction",
+        "data": {
+          "text": "Test interaction"
+        },
+        "connections": [
+          "memory_1751105274905_7sz28spwp"
+        ],
+        "metadata": {
+          "source": "user_input",
+          "confidence": 0.82,
+          "lastUpdated": 1751105274905,
+          "tags": [
+            "test"
+          ],
+          "importance": 0.7,
+          "accessCount": 0
+        },
+        "createdAt": 1751105274905,
+        "lastUpdated": 1751105274905
+      }
+    ],
+    [
+      "memory_1751105274905_7sz28spwp",
+      {
+        "id": "memory_1751105274905_7sz28spwp",
+        "type": "pattern",
+        "data": {
+          "description": "Test pattern"
+        },
+        "connections": [
+          "memory_1751105274905_s6e2wfjww"
+        ],
+        "metadata": {
+          "source": "system_generated",
+          "confidence": 0.74,
+          "lastUpdated": 1751105274905,
+          "tags": [
+            "test",
+            "pattern"
+          ],
+          "importance": 0.8,
+          "accessCount": 0
+        },
+        "createdAt": 1751105274905,
+        "lastUpdated": 1751105274905
+      }
+    ],
+    [
+      "memory_1751105304370_mzkwkax6w",
+      {
+        "id": "memory_1751105304370_mzkwkax6w",
+        "type": "interaction",
+        "data": {
+          "text": "Test interaction"
+        },
+        "connections": [
+          "memory_1751105304370_roryloyy4"
+        ],
+        "metadata": {
+          "source": "user_input",
+          "confidence": 0.82,
+          "lastUpdated": 1751105304370,
+          "tags": [
+            "test"
+          ],
+          "importance": 0.7,
+          "accessCount": 0
+        },
+        "createdAt": 1751105304370,
+        "lastUpdated": 1751105304370
+      }
+    ],
+    [
+      "memory_1751105304370_roryloyy4",
+      {
+        "id": "memory_1751105304370_roryloyy4",
+        "type": "pattern",
+        "data": {
+          "description": "Test pattern"
+        },
+        "connections": [
+          "memory_1751105304370_mzkwkax6w"
+        ],
+        "metadata": {
+          "source": "system_generated",
+          "confidence": 0.74,
+          "lastUpdated": 1751105304370,
+          "tags": [
+            "test",
+            "pattern"
+          ],
+          "importance": 0.8,
+          "accessCount": 0
+        },
+        "createdAt": 1751105304370,
+        "lastUpdated": 1751105304370
+      }
+    ],
+    [
+      "memory_1751105317368_78vu1ze5v",
+      {
+        "id": "memory_1751105317368_78vu1ze5v",
+        "type": "interaction",
+        "data": {
+          "text": "Test interaction"
+        },
+        "connections": [
+          "memory_1751105317369_z0moq76zf"
+        ],
+        "metadata": {
+          "source": "user_input",
+          "confidence": 0.82,
+          "lastUpdated": 1751105317368,
+          "tags": [
+            "test"
+          ],
+          "importance": 0.7,
+          "accessCount": 0
+        },
+        "createdAt": 1751105317368,
+        "lastUpdated": 1751105317368
+      }
+    ],
+    [
+      "memory_1751105317369_z0moq76zf",
+      {
+        "id": "memory_1751105317369_z0moq76zf",
+        "type": "pattern",
+        "data": {
+          "description": "Test pattern"
+        },
+        "connections": [
+          "memory_1751105317368_78vu1ze5v"
+        ],
+        "metadata": {
+          "source": "system_generated",
+          "confidence": 0.74,
+          "lastUpdated": 1751105317369,
+          "tags": [
+            "test",
+            "pattern"
+          ],
+          "importance": 0.8,
+          "accessCount": 0
+        },
+        "createdAt": 1751105317369,
+        "lastUpdated": 1751105317369
+      }
+    ],
+    [
+      "memory_1751105317375_ro6iq2476",
+      {
+        "id": "memory_1751105317375_ro6iq2476",
+        "type": "interaction",
+        "data": {
+          "text": "Test interaction"
+        },
+        "connections": [
+          "memory_1751105317375_4fv4kkygj"
+        ],
+        "metadata": {
+          "source": "user_input",
+          "confidence": 0.82,
+          "lastUpdated": 1751105317375,
+          "tags": [
+            "test"
+          ],
+          "importance": 0.7,
+          "accessCount": 0
+        },
+        "createdAt": 1751105317375,
+        "lastUpdated": 1751105317375
+      }
+    ],
+    [
+      "memory_1751105317375_4fv4kkygj",
+      {
+        "id": "memory_1751105317375_4fv4kkygj",
+        "type": "pattern",
+        "data": {
+          "description": "Test pattern"
+        },
+        "connections": [
+          "memory_1751105317375_ro6iq2476"
+        ],
+        "metadata": {
+          "source": "system_generated",
+          "confidence": 0.74,
+          "lastUpdated": 1751105317375,
+          "tags": [
+            "test",
+            "pattern"
+          ],
+          "importance": 0.8,
+          "accessCount": 0
+        },
+        "createdAt": 1751105317375,
+        "lastUpdated": 1751105317375
+      }
+    ],
+    [
+      "memory_1751105527546_wy62jkk9w",
+      {
+        "id": "memory_1751105527546_wy62jkk9w",
+        "type": "interaction",
+        "data": {
+          "text": "Test interaction"
+        },
+        "connections": [
+          "memory_1751105527546_wjttybqor"
+        ],
+        "metadata": {
+          "source": "user_input",
+          "confidence": 0.82,
+          "lastUpdated": 1751105527546,
+          "tags": [
+            "test"
+          ],
+          "importance": 0.7,
+          "accessCount": 0
+        },
+        "createdAt": 1751105527546,
+        "lastUpdated": 1751105527546
+      }
+    ],
+    [
+      "memory_1751105527546_wjttybqor",
+      {
+        "id": "memory_1751105527546_wjttybqor",
+        "type": "pattern",
+        "data": {
+          "description": "Test pattern"
+        },
+        "connections": [
+          "memory_1751105527546_wy62jkk9w"
+        ],
+        "metadata": {
+          "source": "system_generated",
+          "confidence": 0.74,
+          "lastUpdated": 1751105527546,
+          "tags": [
+            "test",
+            "pattern"
+          ],
+          "importance": 0.8,
+          "accessCount": 0
+        },
+        "createdAt": 1751105527546,
+        "lastUpdated": 1751105527546
+      }
+    ],
+    [
+      "memory_1751105534462_gtb1mcdll",
+      {
+        "id": "memory_1751105534462_gtb1mcdll",
+        "type": "interaction",
+        "data": {
+          "text": "Test interaction"
+        },
+        "connections": [
+          "memory_1751105534463_acx956zg9"
+        ],
+        "metadata": {
+          "source": "user_input",
+          "confidence": 0.82,
+          "lastUpdated": 1751105534462,
+          "tags": [
+            "test"
+          ],
+          "importance": 0.7,
+          "accessCount": 0
+        },
+        "createdAt": 1751105534462,
+        "lastUpdated": 1751105534462
+      }
+    ],
+    [
+      "memory_1751105534463_acx956zg9",
+      {
+        "id": "memory_1751105534463_acx956zg9",
+        "type": "pattern",
+        "data": {
+          "description": "Test pattern"
+        },
+        "connections": [
+          "memory_1751105534462_gtb1mcdll"
+        ],
+        "metadata": {
+          "source": "system_generated",
+          "confidence": 0.74,
+          "lastUpdated": 1751105534463,
+          "tags": [
+            "test",
+            "pattern"
+          ],
+          "importance": 0.8,
+          "accessCount": 0
+        },
+        "createdAt": 1751105534463,
+        "lastUpdated": 1751105534463
+      }
+    ]
+  ],
+  "connections": [
+    [
+      "memory_1751105181765_tnz4b7ia7-memory_1751105181766_pvbh2i9vk",
+      [
+        "memory_1751105181765_tnz4b7ia7",
+        "memory_1751105181766_pvbh2i9vk"
+      ]
+    ],
+    [
+      "memory_1751105239470_1m0ycd5aq-memory_1751105239470_xjxamg6gl",
+      [
+        "memory_1751105239470_1m0ycd5aq",
+        "memory_1751105239470_xjxamg6gl"
+      ]
+    ],
+    [
+      "memory_1751105274905_s6e2wfjww-memory_1751105274905_7sz28spwp",
+      [
+        "memory_1751105274905_s6e2wfjww",
+        "memory_1751105274905_7sz28spwp"
+      ]
+    ],
+    [
+      "memory_1751105304370_mzkwkax6w-memory_1751105304370_roryloyy4",
+      [
+        "memory_1751105304370_mzkwkax6w",
+        "memory_1751105304370_roryloyy4"
+      ]
+    ],
+    [
+      "memory_1751105317368_78vu1ze5v-memory_1751105317369_z0moq76zf",
+      [
+        "memory_1751105317368_78vu1ze5v",
+        "memory_1751105317369_z0moq76zf"
+      ]
+    ],
+    [
+      "memory_1751105317375_ro6iq2476-memory_1751105317375_4fv4kkygj",
+      [
+        "memory_1751105317375_ro6iq2476",
+        "memory_1751105317375_4fv4kkygj"
+      ]
+    ],
+    [
+      "memory_1751105527546_wy62jkk9w-memory_1751105527546_wjttybqor",
+      [
+        "memory_1751105527546_wy62jkk9w",
+        "memory_1751105527546_wjttybqor"
+      ]
+    ],
+    [
+      "memory_1751105534462_gtb1mcdll-memory_1751105534463_acx956zg9",
+      [
+        "memory_1751105534462_gtb1mcdll",
+        "memory_1751105534463_acx956zg9"
+      ]
+    ]
+  ],
+  "shortTerm": [
+    "memory_1751105181765_tnz4b7ia7",
+    "memory_1751105181766_pvbh2i9vk",
+    "memory_1751105239470_1m0ycd5aq",
+    "memory_1751105239470_xjxamg6gl",
+    "memory_1751105274905_s6e2wfjww",
+    "memory_1751105274905_7sz28spwp",
+    "memory_1751105304370_mzkwkax6w",
+    "memory_1751105304370_roryloyy4",
+    "memory_1751105317368_78vu1ze5v",
+    "memory_1751105317369_z0moq76zf",
+    "memory_1751105317375_ro6iq2476",
+    "memory_1751105317375_4fv4kkygj",
+    "memory_1751105527546_wy62jkk9w",
+    "memory_1751105527546_wjttybqor",
+    "memory_1751105534462_gtb1mcdll",
+    "memory_1751105534463_acx956zg9"
+  ],
+  "longTerm": [],
+  "lastIndexed": 1751105181764,
+  "connectionsAnalysis": [
+    [
+      "memory_1751105181765_tnz4b7ia7-memory_1751105181766_pvbh2i9vk",
+      {
+        "strength": 0.6,
+        "type": "related",
+        "bidirectional": true,
+        "lastAccessed": 1751105181766,
+        "accessCount": 0
+      }
+    ],
+    [
+      "memory_1751105239470_1m0ycd5aq-memory_1751105239470_xjxamg6gl",
+      {
+        "strength": 0.6,
+        "type": "related",
+        "bidirectional": true,
+        "lastAccessed": 1751105239470,
+        "accessCount": 0
+      }
+    ],
+    [
+      "memory_1751105274905_s6e2wfjww-memory_1751105274905_7sz28spwp",
+      {
+        "strength": 0.6,
+        "type": "related",
+        "bidirectional": true,
+        "lastAccessed": 1751105274905,
+        "accessCount": 0
+      }
+    ],
+    [
+      "memory_1751105304370_mzkwkax6w-memory_1751105304370_roryloyy4",
+      {
+        "strength": 0.6,
+        "type": "related",
+        "bidirectional": true,
+        "lastAccessed": 1751105304370,
+        "accessCount": 0
+      }
+    ],
+    [
+      "memory_1751105317368_78vu1ze5v-memory_1751105317369_z0moq76zf",
+      {
+        "strength": 0.6,
+        "type": "related",
+        "bidirectional": true,
+        "lastAccessed": 1751105317369,
+        "accessCount": 0
+      }
+    ],
+    [
+      "memory_1751105317375_ro6iq2476-memory_1751105317375_4fv4kkygj",
+      {
+        "strength": 0.6,
+        "type": "related",
+        "bidirectional": true,
+        "lastAccessed": 1751105317375,
+        "accessCount": 0
+      }
+    ],
+    [
+      "memory_1751105527546_wy62jkk9w-memory_1751105527546_wjttybqor",
+      {
+        "strength": 0.6,
+        "type": "related",
+        "bidirectional": true,
+        "lastAccessed": 1751105527546,
+        "accessCount": 0
+      }
+    ],
+    [
+      "memory_1751105534462_gtb1mcdll-memory_1751105534463_acx956zg9",
+      {
+        "strength": 0.6,
+        "type": "related",
+        "bidirectional": true,
+        "lastAccessed": 1751105534463,
+        "accessCount": 0
+      }
+    ]
+  ],
+  "timestamp": 1751105534464
+}

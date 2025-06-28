@@ -35,7 +35,7 @@ class AIService {
       const conversationHistory = context.messages
         .slice(-5) // Get last 5 messages for context
         .map((msg) => ({
-          role: msg.sender === 'user' ? 'user' : 'assistant',
+          role: msg.sender === 'user' ? 'user' as const : 'assistant' as const,
           content: msg.content,
         }));
 
@@ -45,10 +45,10 @@ class AIService {
         .join('\n');
 
       const messages = [
-        { role: 'system', content: this.systemPrompt },
-        { role: 'system', content: `Relevant knowledge:\n${relevantSummaries}` },
+        { role: 'system' as const, content: this.systemPrompt },
+        { role: 'system' as const, content: `Relevant knowledge:\n${relevantSummaries}` },
         ...conversationHistory,
-        { role: 'user', content: userMessage },
+        { role: 'user' as const, content: userMessage },
       ];
 
       const response = await this.openai.chat.completions.create({
@@ -80,8 +80,8 @@ class AIService {
       const response = await this.openai.chat.completions.create({
         model: 'gpt-4',
         messages: [
-          { role: 'system', content: this.systemPrompt },
-          { role: 'user', content: prompt },
+          { role: 'system' as const, content: this.systemPrompt },
+          { role: 'user' as const, content: prompt },
         ],
         temperature: 0.5,
         max_tokens: 500,

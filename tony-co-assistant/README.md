@@ -1,46 +1,178 @@
-# Getting Started with Create React App
+# Tony Assistant
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A sophisticated AI assistant system with advanced memory management, learning capabilities, and comprehensive UX design tools.
 
-## Available Scripts
+## 🚀 Quick Start
 
-In the project directory, you can run:
+### Development
+```bash
+# Install dependencies
+npm install
 
-### `npm start`
+# Start development server
+npm start
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Production Deployment
+```bash
+# Setup production environment
+npm run setup:production
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+# Edit .env.production with your MongoDB credentials
 
-### `npm test`
+# Deploy to production
+npm run deploy
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 📋 Features
 
-### `npm run build`
+- **Memory System**: Advanced memory management with indexing and persistence
+- **Learning System**: Pattern recognition and knowledge sharing
+- **UX Repository**: Comprehensive design system and component library
+- **Hybrid Storage**: Local + MongoDB cloud storage with automatic syncing
+- **Real-time Communication**: Event-driven architecture with pub/sub system
+- **Production Ready**: Complete deployment pipeline with security best practices
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🗄️ Database Integration
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Tony Assistant uses MongoDB for cloud storage with automatic local/cloud synchronization:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Local Storage**: Browser localStorage for immediate access
+- **Cloud Storage**: MongoDB Atlas for persistence and cross-device sync
+- **Automatic Syncing**: Every 30 seconds and on save operations
+- **User Isolation**: Per-user and per-session data separation
+- **Connection Management**: Automatic retry logic and connection pooling
 
-### `npm run eject`
+## 📁 Project Structure
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+src/
+├── components/
+│   ├── core/           # Core system components
+│   ├── ui/             # UI components
+│   └── MongoDBStatus.tsx
+├── services/
+│   └── MongoDBService.ts
+├── types/
+│   └── tony.ts
+├── store/
+│   └── TonyStore.ts
+└── events/
+    └── EventBus.ts
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🔧 Configuration
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Environment Variables
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Copy `env.production.example` to `.env.production` and configure:
 
-## Learn More
+```bash
+# MongoDB Configuration
+REACT_APP_MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/tony_assistant
+REACT_APP_MONGODB_DB=tony_assistant
+REACT_APP_ENABLE_MONGODB=true
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+# Application Settings
+REACT_APP_ENVIRONMENT=production
+REACT_APP_APP_NAME=Tony Assistant
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### MongoDB Setup
+
+1. **MongoDB Atlas** (Recommended)
+   - Create free account at [MongoDB Atlas](https://www.mongodb.com/atlas)
+   - Create cluster and database user
+   - Configure network access
+   - Get connection string
+
+2. **Self-Hosted MongoDB**
+   - Install MongoDB locally
+   - Use connection string: `mongodb://localhost:27017/tony_assistant`
+
+## 🚀 Deployment
+
+### Automated Deployment
+```bash
+npm run deploy
+```
+
+### Manual Deployment Options
+- **Vercel**: `npm run deploy:vercel`
+- **Netlify**: `npm run deploy:netlify`
+- **Manual**: Upload `build/` folder to web server
+
+### Production Checklist
+See [PRODUCTION_CHECKLIST.md](./PRODUCTION_CHECKLIST.md) for complete deployment guide.
+
+## 📊 Monitoring
+
+- **MongoDB Atlas**: Built-in monitoring and alerts
+- **Application**: Real-time connection status and statistics
+- **Performance**: Automatic database indexing and optimization
+
+## 🔒 Security
+
+- Environment variables for sensitive data
+- HTTPS enforcement in production
+- MongoDB Atlas security features
+- Automatic credential rotation support
+
+## 📚 Documentation
+
+- [Production Deployment Guide](./PRODUCTION_DEPLOYMENT.md)
+- [Production Checklist](./PRODUCTION_CHECKLIST.md)
+- [MongoDB Setup Guide](./MONGODB_SETUP.md)
+- [Project Roadmap](./PROJECT_ROADMAP.md)
+- [Architecture Overview](./ARCHITECTURE.md)
+
+## 🛠️ Development
+
+### Available Scripts
+
+```bash
+npm start              # Start development server
+npm run build          # Build for production
+npm test               # Run tests
+npm run deploy         # Automated deployment
+npm run deploy:vercel  # Deploy to Vercel
+npm run deploy:netlify # Deploy to Netlify
+npm run test:production # Test production build locally
+```
+
+### Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run integration tests
+npm run test:integration
+
+# Run production build test
+npm run test:production
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🆘 Support
+
+- Check [PRODUCTION_CHECKLIST.md](./PRODUCTION_CHECKLIST.md) for troubleshooting
+- Review [MongoDB Setup Guide](./MONGODB_SETUP.md) for database issues
+- See [Production Deployment Guide](./PRODUCTION_DEPLOYMENT.md) for deployment help
+
+---
+
+**Status**: ✅ Production Ready
+**Version**: 1.0.0
+**Last Updated**: December 2024

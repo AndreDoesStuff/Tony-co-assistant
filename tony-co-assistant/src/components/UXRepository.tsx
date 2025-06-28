@@ -75,10 +75,21 @@ const useStyles = makeStyles({
   },
   summaryText: {
     flex: 1,
-    padding: '16px',
-    backgroundColor: tokens.colorNeutralBackground2,
+    padding: '12px',
+    backgroundColor: tokens.colorNeutralBackground1,
     borderRadius: '4px',
+    border: `1px solid ${tokens.colorNeutralStroke1}`,
     overflowY: 'auto',
+    fontFamily: 'inherit',
+    fontSize: '14px',
+    lineHeight: '1.5',
+    whiteSpace: 'pre-wrap',
+    wordWrap: 'break-word',
+    overflowWrap: 'break-word',
+    '&:focus': {
+      outline: 'none',
+      border: `1px solid ${tokens.colorBrandStroke1}`,
+    },
     '&::-webkit-scrollbar': {
       width: '8px',
     },
@@ -836,7 +847,14 @@ The competitive analysis provided a comprehensive understanding of the market la
               />
               {isExpanded && (
                 <>
-                  <Text style={{padding: '0 12px'}}>{summary.summaryContent}</Text>
+                  <Text style={{
+                    padding: '0 12px',
+                    whiteSpace: 'pre-wrap',
+                    lineHeight: '1.5',
+                    fontFamily: 'inherit'
+                  }}>
+                    {summary.summaryContent}
+                  </Text>
                   <CardFooter style={{border: 'none', background: tokens.colorNeutralBackground1, margin: 0, padding: '0 12px 12px 12px', display: 'flex', justifyContent: 'space-between'}}>
                     <Button 
                       onClick={(e) => {
@@ -898,7 +916,7 @@ The competitive analysis provided a comprehensive understanding of the market la
                     value={selectedSummary?.summaryContent || ''}
                     onChange={(e) => handleSummaryEdit(e.target.value)}
                     className={styles.summaryText}
-                    placeholder="Enter summary..."
+                    placeholder="Enter or edit summary content here. Use line breaks to improve readability..."
                     onMouseUp={handleMouseUp}
                     onKeyUp={handleTextSelection}
                     onSelect={handleSelectEvent}

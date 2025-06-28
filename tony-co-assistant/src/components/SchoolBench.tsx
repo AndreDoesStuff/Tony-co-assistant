@@ -121,15 +121,18 @@ const useStyles = makeStyles({
 const StyledTextArea = styled.textarea`
   width: 100%;
   height: 100%;
-  padding: 8px;
+  padding: 12px;
   border: 1px solid ${tokens.colorNeutralStroke1};
   border-radius: 4px;
   resize: none;
   font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
+  font-size: 14px;
+  line-height: 1.5;
   background-color: ${tokens.colorNeutralBackground1};
   color: ${tokens.colorNeutralForeground1};
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 
   &:focus {
     outline: none;
@@ -474,7 +477,14 @@ The guide concludes with best practices for maintaining and evolving design toke
                       </span>
                     ))}
                   </div>
-                  <Text style={{padding: '0 12px'}}>{material.summaryContent}</Text>
+                  <Text style={{
+                    padding: '0 12px',
+                    whiteSpace: 'pre-wrap',
+                    lineHeight: '1.5',
+                    fontFamily: 'inherit'
+                  }}>
+                    {material.summaryContent}
+                  </Text>
                   <CardFooter style={{border: 'none', background: tokens.colorNeutralBackground1, margin: 0, padding: '0 12px 12px 12px', display: 'flex', justifyContent: 'space-between'}}>
                     <Button 
                       onClick={(e) => {
@@ -535,6 +545,7 @@ The guide concludes with best practices for maintaining and evolving design toke
                         handleSummaryEdit(e.target.value);
                       }
                     }}
+                    placeholder="Enter or edit learning material summary here. Use line breaks to improve readability..."
                   />
                 </div>
               </div>
