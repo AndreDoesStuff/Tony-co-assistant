@@ -28,7 +28,10 @@ export class EventBus {
 
     this.subscriptions.get(eventType)!.push(subscription);
 
-    console.log(`Subscribed to event type: ${eventType} with ID: ${subscription.id}`);
+    // Only log in development or when explicitly enabled
+    if (process.env.NODE_ENV === 'development' && !process.env.TEST_MODE) {
+      console.log(`Subscribed to event type: ${eventType} with ID: ${subscription.id}`);
+    }
 
     return subscription;
   }
@@ -41,7 +44,11 @@ export class EventBus {
       const index = subscriptions.findIndex((sub: EventSubscription) => sub.id === subscriptionId);
       if (index !== -1) {
         subscriptions.splice(index, 1);
-        console.log(`Unsubscribed from event type: ${eventType} with ID: ${subscriptionId}`);
+        
+        // Only log in development or when explicitly enabled
+        if (process.env.NODE_ENV === 'development' && !process.env.TEST_MODE) {
+          console.log(`Unsubscribed from event type: ${eventType} with ID: ${subscriptionId}`);
+        }
         
         // Clean up empty event type arrays
         if (subscriptions.length === 0) {
@@ -99,7 +106,10 @@ export class EventBus {
     const subscriptions = this.subscriptions.get(event.type) || [];
     const activeSubscriptions = subscriptions.filter(sub => sub.active);
 
-    console.log(`Dispatching event ${event.type} to ${activeSubscriptions.length} subscribers`);
+    // Only log in development or when explicitly enabled
+    if (process.env.NODE_ENV === 'development' && !process.env.TEST_MODE) {
+      console.log(`Dispatching event ${event.type} to ${activeSubscriptions.length} subscribers`);
+    }
 
     // Dispatch to all active subscribers
     const promises = activeSubscriptions.map(async (subscription) => {

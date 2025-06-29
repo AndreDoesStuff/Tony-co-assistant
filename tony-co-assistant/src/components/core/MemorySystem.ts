@@ -127,56 +127,54 @@ export class MemorySystem {
     }
 
     try {
+      // Set up event subscriptions
+      this.eventSubscription = eventBus.subscribe('memory_update', this.handleMemoryUpdate.bind(this));
+      eventBus.subscribe('system_cleanup', this.handleSystemCleanup.bind(this));
+
       // Initialize MongoDB service if enabled
       if (this.persistenceConfig.enableMongoDB) {
         await mongoDBService.initialize();
       }
 
-      // Load existing memory from local storage
-      if (this.persistenceConfig.enabled) {
-        await this.loadMemory();
-      }
+      // Load existing memory
+      await this.loadMemory();
 
-      // Load from MongoDB if available and user context is set
-      if (this.persistenceConfig.enableMongoDB && 
-          this.persistenceConfig.userId && 
-          this.persistenceConfig.sessionId) {
-        await this.loadFromMongoDB();
-      }
-
-      // Subscribe to memory-related events
-      this.eventSubscription = eventBus.subscribe('memory_update', this.handleMemoryUpdate.bind(this));
-      
-      // Subscribe to system events
-      eventBus.subscribe('system_cleanup', this.handleSystemCleanup.bind(this));
-      
-      // Start auto-save timer
+      // Set up auto-save timer
       if (this.persistenceConfig.autoSave) {
         this.saveTimer = setInterval(() => {
           this.saveMemory().catch(console.error);
         }, this.persistenceConfig.saveInterval);
       }
 
-      // Start MongoDB sync timer
-      if (this.persistenceConfig.enableMongoDB) {
-        this.mongoSyncTimer = setInterval(() => {
-          this.syncToMongoDB().catch(console.error);
-        }, 60000); // Sync to MongoDB every minute
-      }
-
-      // Start optimization timer
+      // Set up cleanup timer
       this.cleanupTimer = setInterval(() => {
         this.optimizeMemory().catch(console.error);
       }, this.optimizationConfig.cleanupInterval);
 
+      // Set up MongoDB sync timer
+      if (this.persistenceConfig.enableMongoDB) {
+        this.mongoSyncTimer = setInterval(() => {
+          this.syncToMongoDB().catch(console.error);
+        }, 300000); // 5 minutes
+      }
+
       this.isInitialized = true;
-      console.log('Enhanced Memory System initialized with MongoDB integration');
-      
+
+      // Only log in development or when explicitly enabled
+      if (process.env.NODE_ENV === 'development' && !process.env.TEST_MODE) {
+        console.log('Enhanced Memory System initialized with MongoDB integration');
+      }
+
       // Emit initialization event
       await eventBus.publishSimple(
-        'memory_initialized',
+        'memory_system_initialized',
         'MemorySystem',
-        { timestamp: Date.now() },
+        {
+          nodeCount: this.store.nodes.size,
+          connectionCount: this.store.connections.size,
+          shortTermCount: this.store.shortTerm.length,
+          longTermCount: this.store.longTerm.length
+        },
         { component: 'MemorySystem' }
       );
     } catch (error) {
@@ -229,6 +227,9 @@ export class MemorySystem {
       { component: 'MemorySystem' }
     );
 
+    // Enforce short-term memory limit immediately
+    this.cleanupShortTermMemory();
+
     return node;
   }
 
@@ -245,6 +246,14 @@ export class MemorySystem {
       
       // Update indexes
       this.updateIndexes(node, 'update');
+
+      // Emit memory update event
+      eventBus.publishSimple(
+        'memory_update',
+        'MemorySystem',
+        { action: 'update', nodeId: id, accessCount: node.metadata.accessCount },
+        { component: 'MemorySystem' }
+      );
     }
     return node;
   }
@@ -507,41 +516,38 @@ export class MemorySystem {
    * Load from local storage
    */
   private async loadFromLocalStorage(): Promise<void> {
-    let data: string | null = null;
-    
-    // Load from localStorage or sessionStorage
-    if (this.persistenceConfig.useLocalStorage && typeof window !== 'undefined') {
-      data = localStorage.getItem(this.persistenceConfig.storageKey);
-    } else if (typeof window !== 'undefined') {
-      data = sessionStorage.getItem(this.persistenceConfig.storageKey);
+    try {
+      const stored = localStorage.getItem(this.persistenceConfig.storageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        
+        // Convert arrays back to Maps
+        this.store.nodes = new Map(parsed.nodes);
+        this.store.connections = new Map(parsed.connections);
+        this.store.shortTerm = parsed.shortTerm || [];
+        this.store.longTerm = parsed.longTerm || [];
+        this.store.lastIndexed = parsed.lastIndexed || Date.now();
+
+        // Rebuild indexes
+        this.rebuildIndexes();
+
+        // Only log in development or when explicitly enabled
+        if (process.env.NODE_ENV === 'development' && !process.env.TEST_MODE) {
+          console.log('Memory loaded from localStorage');
+        }
+      } else {
+        // Only log in development or when explicitly enabled
+        if (process.env.NODE_ENV === 'development' && !process.env.TEST_MODE) {
+          console.log('No existing local memory found, starting fresh');
+        }
+      }
+    } catch (error) {
+      console.error('Error loading from localStorage:', error);
+      // Only log in development or when explicitly enabled
+      if (process.env.NODE_ENV === 'development' && !process.env.TEST_MODE) {
+        console.log('Starting with fresh memory due to load error');
+      }
     }
-
-    if (!data) {
-      console.log('No existing local memory found, starting fresh');
-      return;
-    }
-
-    const parsed = JSON.parse(data);
-
-    // Restore nodes
-    this.store.nodes = new Map(parsed.nodes);
-    
-    // Restore connections
-    this.store.connections = new Map(parsed.connections);
-    
-    // Restore short-term and long-term arrays
-    this.store.shortTerm = parsed.shortTerm.map((id: string) => this.store.nodes.get(id)).filter(Boolean);
-    this.store.longTerm = parsed.longTerm.map((id: string) => this.store.nodes.get(id)).filter(Boolean);
-    
-    // Restore connection analysis
-    this.connections = new Map(parsed.connectionsAnalysis);
-    
-    this.store.lastIndexed = parsed.lastIndexed;
-
-    // Rebuild indexes
-    this.rebuildIndexes();
-
-    console.log(`Memory loaded from ${this.persistenceConfig.useLocalStorage ? 'localStorage' : 'sessionStorage'}`);
   }
 
   /**
@@ -656,7 +662,10 @@ export class MemorySystem {
       // Update last indexed timestamp
       this.store.lastIndexed = Date.now();
 
-      console.log('Memory optimization completed');
+      // Only log in development or when explicitly enabled
+      if (process.env.NODE_ENV === 'development' && !process.env.TEST_MODE) {
+        console.log('Memory optimization completed');
+      }
     } catch (error) {
       console.error('Memory optimization failed:', error);
     }
@@ -729,6 +738,10 @@ export class MemorySystem {
         case 'transfer':
           this.moveToLongTerm(data.nodeId);
           break;
+        case 'update':
+          // Update event is already handled in getNode method
+          // This is just for logging/acknowledgment
+          break;
         default:
           console.warn('Unknown memory action:', action);
       }
@@ -751,7 +764,10 @@ export class MemorySystem {
       // Update last indexed time
       this.store.lastIndexed = Date.now();
 
-      console.log('Memory System cleanup completed');
+      // Only log in development or when explicitly enabled
+      if (process.env.NODE_ENV === 'development' && !process.env.TEST_MODE) {
+        console.log('Memory System cleanup completed');
+      }
     } catch (error) {
       console.error('Error during memory cleanup:', error);
     }
@@ -768,12 +784,34 @@ export class MemorySystem {
    * Cleanup and destroy the component
    */
   async destroy(): Promise<void> {
+    // Clear all timers
+    if (this.saveTimer) {
+      clearInterval(this.saveTimer);
+      this.saveTimer = undefined;
+    }
+    
+    if (this.cleanupTimer) {
+      clearInterval(this.cleanupTimer);
+      this.cleanupTimer = undefined;
+    }
+    
+    if (this.mongoSyncTimer) {
+      clearInterval(this.mongoSyncTimer);
+      this.mongoSyncTimer = undefined;
+    }
+
+    // Unsubscribe from events
     if (this.eventSubscription) {
       eventBus.unsubscribe(this.eventSubscription.id);
+      this.eventSubscription = undefined;
     }
     
     this.isInitialized = false;
-    console.log('Memory System destroyed');
+    
+    // Only log in development or when explicitly enabled
+    if (process.env.NODE_ENV === 'development' && !process.env.TEST_MODE) {
+      console.log('Memory System destroyed');
+    }
   }
 
   /**

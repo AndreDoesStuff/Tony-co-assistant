@@ -669,12 +669,17 @@ export class LearningSystem {
    * Evaluate a feedback rule
    */
   private evaluateRule(rule: FeedbackRule, feedback: FeedbackLoop): boolean {
+    // Add null checks for feedback.data
+    if (!feedback.data) {
+      return false;
+    }
+    
     // Simple rule evaluation logic
     if (rule.condition.includes('confidence < 0.5')) {
-      return feedback.data.confidence < 0.5;
+      return (feedback.data.confidence || 0) < 0.5;
     }
     if (rule.condition.includes('pattern_occurrences > 10')) {
-      return feedback.data.occurrences > 10;
+      return (feedback.data.occurrences || 0) > 10;
     }
     return false;
   }
@@ -683,17 +688,20 @@ export class LearningSystem {
    * Determine action based on rule
    */
   private determineAction(actionType: string, feedback: FeedbackLoop): FeedbackAction {
+    // Add null checks for feedback.data
+    const currentConfidence = feedback.data?.confidence || 0;
+    
     switch (actionType) {
       case 'request_feedback':
         return {
           type: 'update_pattern',
-          parameters: { confidence: feedback.data.confidence + 0.1 },
+          parameters: { confidence: currentConfidence + 0.1 },
           executed: false
         };
       case 'increase_confidence':
         return {
           type: 'update_pattern',
-          parameters: { confidence: Math.min(1.0, feedback.data.confidence + 0.2) },
+          parameters: { confidence: Math.min(1.0, currentConfidence + 0.2) },
           executed: false
         };
       default:

@@ -1,9 +1,14 @@
-import { memorySystem } from './MemorySystem';
-import { learningSystem } from './LearningSystem';
-import { designSystem } from './DesignSystem';
-import { uxRepository } from './UXRepository';
-import { schoolBench } from './SchoolBench';
-import { assetLibrary } from './AssetLibrary';
+import { MemorySystem } from './MemorySystem';
+import { LearningSystem } from './LearningSystem';
+import { DesignSystem } from './DesignSystem';
+import { UXRepository } from './UXRepository';
+import { SchoolBench } from './SchoolBench';
+import { AssetLibrary } from './AssetLibrary';
+import { AIDesignSuggestions } from './AIDesignSuggestions';
+import { AdvancedLearning } from '../advanced/AdvancedLearning';
+import { KnowledgeGraph } from '../advanced/KnowledgeGraph';
+import { UserExperienceEnhancement } from '../advanced/UserExperienceEnhancement';
+import { SystemOptimizer } from '../advanced/SystemOptimizer';
 import { eventBus } from '../../events/EventBus';
 
 /**
@@ -19,17 +24,27 @@ export class ComponentManager {
     'DesignSystem',
     'UXRepository',
     'SchoolBench',
-    'AssetLibrary'
+    'AssetLibrary',
+    'AIDesignSuggestions',
+    'AdvancedLearning',
+    'KnowledgeGraph',
+    'UserExperienceEnhancement',
+    'SystemOptimizer'
   ];
 
   constructor() {
-    // Register all components
-    this.components.set('MemorySystem', memorySystem);
-    this.components.set('LearningSystem', learningSystem);
-    this.components.set('DesignSystem', designSystem);
-    this.components.set('UXRepository', uxRepository);
-    this.components.set('SchoolBench', schoolBench);
-    this.components.set('AssetLibrary', assetLibrary);
+    // Create instances of all components
+    this.components.set('MemorySystem', new MemorySystem());
+    this.components.set('LearningSystem', new LearningSystem());
+    this.components.set('DesignSystem', new DesignSystem());
+    this.components.set('UXRepository', new UXRepository());
+    this.components.set('SchoolBench', new SchoolBench());
+    this.components.set('AssetLibrary', new AssetLibrary());
+    this.components.set('AIDesignSuggestions', new AIDesignSuggestions());
+    this.components.set('AdvancedLearning', new AdvancedLearning());
+    this.components.set('KnowledgeGraph', new KnowledgeGraph());
+    this.components.set('UserExperienceEnhancement', new UserExperienceEnhancement());
+    this.components.set('SystemOptimizer', new SystemOptimizer());
   }
 
   /**
@@ -42,34 +57,54 @@ export class ComponentManager {
 
     console.log('Starting component initialization...');
 
+    const failedComponents: string[] = [];
+    const successfulComponents: string[] = [];
+
     try {
       // Initialize components in dependency order
       for (const componentName of this.initializationOrder) {
         const component = this.components.get(componentName);
         if (component && typeof component.initialize === 'function') {
           console.log(`Initializing ${componentName}...`);
-          await component.initialize();
-          console.log(`${componentName} initialized successfully`);
+          try {
+            await component.initialize();
+            console.log(`${componentName} initialized successfully`);
+            successfulComponents.push(componentName);
+          } catch (error) {
+            console.error(`Failed to initialize ${componentName}:`, error);
+            failedComponents.push(componentName);
+            // Continue with other components instead of failing completely
+          }
         }
       }
 
-      this.isInitialized = true;
-      console.log('All components initialized successfully');
+      // Mark as initialized if at least some components succeeded
+      if (successfulComponents.length > 0) {
+        this.isInitialized = true;
+        console.log(`Component initialization completed. ${successfulComponents.length} successful, ${failedComponents.length} failed`);
+        
+        if (failedComponents.length > 0) {
+          console.warn('Failed components:', failedComponents);
+        }
 
-      // Emit system ready event
-      await eventBus.publishSimple(
-        'system_ready',
-        'ComponentManager',
-        { 
-          timestamp: Date.now(),
-          componentCount: this.components.size,
-          initializedComponents: Array.from(this.components.keys())
-        },
-        { component: 'ComponentManager' }
-      );
+        // Emit system ready event
+        await eventBus.publishSimple(
+          'system_ready',
+          'ComponentManager',
+          { 
+            timestamp: Date.now(),
+            componentCount: this.components.size,
+            initializedComponents: successfulComponents,
+            failedComponents: failedComponents
+          },
+          { component: 'ComponentManager' }
+        );
+      } else {
+        throw new Error('No components could be initialized');
+      }
 
     } catch (error) {
-      console.error('Failed to initialize components:', error);
+      console.error('Critical failure during component initialization:', error);
       throw error;
     }
   }
@@ -108,15 +143,29 @@ export class ComponentManager {
     isInitialized: boolean;
     componentCount: number;
     initializedCount: number;
-    status: { [key: string]: boolean };
+    failedCount: number;
+    status: { [key: string]: { initialized: boolean; error?: string } };
   } {
-    const status = this.getComponentStatus();
-    const initializedCount = Object.values(status).filter(Boolean).length;
+    const status: { [key: string]: { initialized: boolean; error?: string } } = {};
+    let initializedCount = 0;
+    let failedCount = 0;
+    
+    for (const [name, component] of Array.from(this.components.entries())) {
+      const isInitialized = component.isInitialized || false;
+      status[name] = { initialized: isInitialized };
+      
+      if (isInitialized) {
+        initializedCount++;
+      } else {
+        failedCount++;
+      }
+    }
 
     return {
       isInitialized: this.isInitialized,
       componentCount: this.components.size,
       initializedCount,
+      failedCount,
       status
     };
   }
@@ -170,6 +219,13 @@ export class ComponentManager {
   }
 
   /**
+   * Destroy the component manager and all components
+   */
+  async destroy(): Promise<void> {
+    await this.cleanup();
+  }
+
+  /**
    * Restart a specific component
    */
   async restartComponent(componentName: string): Promise<boolean> {
@@ -211,7 +267,9 @@ export class ComponentManager {
       'DesignSystem': [],
       'UXRepository': ['MemorySystem', 'LearningSystem'],
       'SchoolBench': ['LearningSystem'],
-      'AssetLibrary': ['DesignSystem']
+      'AssetLibrary': ['DesignSystem'],
+      'AIDesignSuggestions': ['DesignSystem'],
+      'AdvancedLearning': ['LearningSystem']
     };
   }
 

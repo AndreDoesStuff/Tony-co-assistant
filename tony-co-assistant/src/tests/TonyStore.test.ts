@@ -67,7 +67,7 @@ describe('TonyStore', () => {
   test('should get system health', () => {
     const health = store.getSystemHealth();
     expect(health).toBeDefined();
-    expect(health.componentCount).toBe(6);
+    expect(health.componentCount).toBe(11);
     expect(health.isInitialized).toBeDefined();
   });
 

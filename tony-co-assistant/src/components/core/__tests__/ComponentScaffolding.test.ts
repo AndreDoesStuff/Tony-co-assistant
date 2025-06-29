@@ -20,7 +20,7 @@ describe('Component Scaffolding', () => {
   describe('Component Manager', () => {
     test('should register all components', () => {
       const components = componentManager.getAllComponents();
-      expect(components.size).toBe(6);
+      expect(components.size).toBe(11);
       
       expect(components.has('MemorySystem')).toBe(true);
       expect(components.has('LearningSystem')).toBe(true);

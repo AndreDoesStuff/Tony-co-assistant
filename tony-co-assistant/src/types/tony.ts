@@ -475,6 +475,38 @@ export interface AssetMetadata {
   format: string;
   dimensions?: { width: number; height: number };
   duration?: number;
+  // Enhanced metadata for quality scoring
+  description?: string;
+  author?: string;
+  license?: string;
+  copyright?: string;
+  usageRights?: string;
+  permissions?: string;
+  ratingCount?: number;
+  // Accessibility metadata
+  altText?: string;
+  colorPalette?: string[];
+  contrastRatio?: number;
+  semanticTags?: string[];
+  ariaLabels?: string[];
+  // Performance metadata
+  compressed?: boolean;
+  // Quality scoring metadata
+  qualityScore?: number;
+  qualityGrade?: 'A+' | 'A' | 'B+' | 'B' | 'C+' | 'C' | 'D' | 'F';
+  qualityMetrics?: {
+    technical: number;
+    metadata: number;
+    usage: number;
+    feedback: number;
+    accessibility: number;
+    performance: number;
+    compliance: number;
+  };
+  qualityIssues?: string[];
+  qualityRecommendations?: string[];
+  qualityStrengths?: string[];
+  lastQualityAnalysis?: number;
 }
 
 // UX Repository

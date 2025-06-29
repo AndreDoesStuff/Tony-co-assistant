@@ -8,6 +8,7 @@ import { UXRepository } from '../components/core/UXRepository';
 import { SchoolBench } from '../components/core/SchoolBench';
 import { AssetLibrary } from '../components/core/AssetLibrary';
 import { TonyEvent } from '../types/tony';
+import { AIDesignSuggestions } from '../components/core/AIDesignSuggestions';
 
 describe('System Integration Tests', () => {
   let store: TonyStore;
@@ -29,9 +30,9 @@ describe('System Integration Tests', () => {
     test('should initialize all components successfully', async () => {
       await componentManager.initialize();
       
-      // Verify all components are initialized
+      // Verify all components are registered
       const components = componentManager.getAllComponents();
-      expect(components.size).toBe(6);
+      expect(components.size).toBe(11); // Updated to reflect all components including advanced ones
       
       // Check that components exist
       expect(components.has('MemorySystem')).toBe(true);
@@ -295,7 +296,7 @@ describe('System Integration Tests', () => {
       
       // Should still succeed with other components
       const components = componentManager.getAllComponents();
-      expect(components.size).toBe(6);
+      expect(components.size).toBe(11);
       
       // Restore original implementation
       jest.restoreAllMocks();
@@ -492,6 +493,159 @@ describe('System Integration Tests', () => {
       if (memoryStats) expect(memoryStats.totalNodes).toBeGreaterThanOrEqual(0);
       if (learningStats) expect(learningStats.patternCount).toBeGreaterThanOrEqual(0);
       if (designStats) expect(designStats.patternCount).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  describe('Cross-Component Communication & Data Flow', () => {
+    test('should handle complete data flow between all components', async () => {
+      await componentManager.initialize();
+      
+      // 1. Memory System creates a node
+      const memorySystem = componentManager.getComponent<MemorySystem>('MemorySystem');
+      const memoryNode = memorySystem?.createNode(
+        'knowledge',
+        'User prefers dark theme for mobile apps',
+        'user_input',
+        ['preference', 'mobile-design'],
+        0.8
+      );
+      
+      expect(memoryNode).toBeDefined();
+      
+      // 2. Learning System processes the memory and creates a pattern
+      const learningSystem = componentManager.getComponent<LearningSystem>('LearningSystem');
+      const pattern = learningSystem?.learnPattern(
+        'design-preference',
+        { theme: 'dark', platform: 'mobile', confidence: 0.8 },
+        ['memory-system'],
+        0.8
+      );
+      
+      expect(pattern).toBeDefined();
+      
+      // 3. UX Repository stores the pattern
+      const uxRepository = componentManager.getComponent<UXRepository>('UXRepository');
+      uxRepository?.addDesignPattern(
+        'Dark Theme Preference',
+        'visual',
+        'Users prefer dark theme for mobile applications',
+        ['mobile', 'theme', 'preference']
+      );
+      
+      // 4. Asset Library creates related assets
+      const assetLibrary = componentManager.getComponent<AssetLibrary>('AssetLibrary');
+      const asset = assetLibrary?.addAsset(
+        'Dark Theme Component',
+        'image',
+        'dark-theme-component.json',
+        { tags: ['dark', 'theme', 'mobile'] },
+        ['dark', 'theme', 'mobile'],
+        'preference'
+      );
+      
+      expect(asset).toBeDefined();
+      
+      // 5. AI Design Suggestions generates suggestions based on all the above
+      const aiDesignSuggestions = componentManager.getComponent<AIDesignSuggestions>('AIDesignSuggestions');
+      const suggestions = await aiDesignSuggestions?.generateSuggestions(
+        'test-user',
+        { 
+          platform: 'mobile', 
+          userPreference: 'dark-theme',
+          currentDesign: { type: 'mobile-app' },
+          designSystem: { colors: ['dark', 'light'] },
+          availableAssets: ['dark-theme-component.json'],
+          userInteractions: [],
+          interactionPatterns: [],
+          userBehavior: {},
+          learnedPatterns: [],
+          knowledgeBase: [],
+          userProgress: {},
+          strengths: ['mobile-design'],
+          weaknesses: ['accessibility']
+        },
+        3
+      );
+      
+      expect(suggestions).toBeDefined();
+      if (suggestions && suggestions.length > 0) {
+        expect(suggestions[0].confidence).toBeGreaterThan(0);
+        expect(suggestions[0].reasoning).toBeDefined();
+      }
+      
+      // 6. Verify all components have processed the data
+      const memoryStats = memorySystem?.getStats();
+      const learningStats = learningSystem?.getStats();
+      const uxStats = uxRepository?.getStats();
+      const assetStats = assetLibrary?.getStats();
+      
+      expect(memoryStats?.totalNodes).toBeGreaterThan(0);
+      expect(learningStats?.patternCount).toBeGreaterThan(0);
+      expect(uxStats?.designPatternCount).toBeGreaterThan(0);
+      expect(assetStats?.assetCount).toBeGreaterThan(0);
+    });
+
+    test('should handle real-time event synchronization', async () => {
+      await componentManager.initialize();
+      
+      const events: any[] = [];
+      
+      // Subscribe to multiple event types
+      const subscription1 = eventBus.subscribe('memory_node_created', (event) => {
+        events.push({ type: 'memory_created', data: event.data });
+      });
+      
+      const subscription2 = eventBus.subscribe('pattern_learned', (event) => {
+        events.push({ type: 'pattern_learned', data: event.data });
+      });
+      
+      const subscription3 = eventBus.subscribe('suggestions_generated', (event) => {
+        events.push({ type: 'suggestion_generated', data: event.data });
+      });
+      
+      // Trigger a chain of events
+      const memorySystem = componentManager.getComponent<MemorySystem>('MemorySystem');
+      const learningSystem = componentManager.getComponent<LearningSystem>('LearningSystem');
+      const designSystem = componentManager.getComponent<DesignSystem>('DesignSystem');
+      
+      // Create memory -> triggers learning -> triggers design suggestion
+      memorySystem?.createNode('interaction', { action: 'theme-toggle' }, 'user_input', ['ui'], 0.7);
+      
+      // Wait for event processing
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // Verify events were processed
+      expect(events.length).toBeGreaterThan(0);
+      
+      // Cleanup subscriptions
+      eventBus.unsubscribe(subscription1.id);
+      eventBus.unsubscribe(subscription2.id);
+      eventBus.unsubscribe(subscription3.id);
+    });
+
+    test('should handle component failure gracefully', async () => {
+      // Test that if one component fails, others continue working
+      const health = componentManager.getSystemHealth();
+      
+      // Verify we have some components working
+      expect(health.initializedCount).toBeGreaterThan(0);
+      expect(health.componentCount).toBeGreaterThan(0);
+      
+      // Verify system is still functional even with some failures
+      if (health.failedCount > 0) {
+        console.log(`System has ${health.failedCount} failed components but continues to function`);
+      }
+      
+      // Test that working components can still communicate
+      const workingComponents = Object.entries(health.status)
+        .filter(([_, status]) => status.initialized)
+        .map(([name, _]) => name);
+      
+      if (workingComponents.length > 0) {
+        const firstWorking = workingComponents[0];
+        const component = componentManager.getComponent(firstWorking);
+        expect(component).toBeDefined();
+      }
     });
   });
 }); 
