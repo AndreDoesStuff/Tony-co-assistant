@@ -357,9 +357,10 @@ code {
   cursor: not-allowed;
 }
 
+/* Desktop version */
 .system-status-toggle {
   position: fixed;
-  top: 20px;
+  bottom: 20px;
   right: 20px;
   width: 50px;
   height: 50px;
@@ -386,7 +387,7 @@ code {
   }
 
   .system-status-toggle {
-    top: 10px;
+    bottom: 10px;
     right: 10px;
     width: 40px;
     height: 40px;
@@ -440,23 +441,6 @@ code {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-}
-
-.system-status-toggle {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  width: 50px;
-  height: 50px;
-  background: rgba(100, 181, 246, 0.2);
-  border: 1px solid rgba(100, 181, 246, 0.3);
-  border-radius: 50%;
-  color: #64b5f6;
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  z-index: 1001;
-  backdrop-filter: blur(10px);
 }
 
 .toggle-button {
@@ -618,5 +602,56 @@ code {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+.sidebar-nav {
+  background: #292929 !important;
+  border-right: 1.5px solid #393939 !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0;
+  height: 100vh;
+  min-width: 64px;
+  z-index: 10;
+}
+
+.sidebar-nav .fluentui-Button {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 50%;
+  transition: background 0.15s;
+  margin: 4px 0;
+  color: #b0b3c6;
+}
+
+.sidebar-nav .fluentui-Button[aria-pressed="true"],
+.sidebar-nav .fluentui-Button.selected {
+  background: #23263a !important;
+  color: #fff !important;
+  border-radius: 16px;
+}
+
+.sidebar-nav .fluentui-Button:hover {
+  background: #23263a33 !important;
+  color: #fff;
+}
+
+.sidebar-nav .fluentui-Button svg {
+  width: 32px;
+  height: 32px;
+  display: block;
+}
+
+/* Typing animation for AI Design Suggestion Chat */
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-10px);
+    opacity: 1;
   }
 }

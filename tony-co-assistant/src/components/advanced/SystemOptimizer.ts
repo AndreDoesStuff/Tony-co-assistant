@@ -528,7 +528,7 @@ export class SystemOptimizer {
     } catch (error) {
       action.status = 'failed';
       action.endTime = Date.now();
-      action.result = { success: false, error: error.message };
+      action.result = { success: false, error: error instanceof Error ? error.message : String(error) };
     }
 
     return action;
@@ -583,7 +583,7 @@ export class SystemOptimizer {
     } catch (error) {
       action.status = 'failed';
       action.endTime = Date.now();
-      action.result = { success: false, error: error.message };
+      action.result = { success: false, error: error instanceof Error ? error.message : String(error) };
     }
 
     return action;
@@ -638,7 +638,7 @@ export class SystemOptimizer {
     } catch (error) {
       action.status = 'failed';
       action.endTime = Date.now();
-      action.result = { success: false, error: error.message };
+      action.result = { success: false, error: error instanceof Error ? error.message : String(error) };
     }
 
     return action;
@@ -698,7 +698,7 @@ export class SystemOptimizer {
     } catch (error) {
       action.status = 'failed';
       action.endTime = Date.now();
-      action.result = { success: false, error: error.message };
+      action.result = { success: false, error: error instanceof Error ? error.message : String(error) };
     }
 
     return action;
